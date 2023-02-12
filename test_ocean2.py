@@ -32,12 +32,11 @@ def get_input(local=False):
 
     
     
-    
+local=False
 # def catalonia_analysis(local=False):
 filename = get_input(local)
 if not filename:
     print("Could not retrieve filename.")
-    return
 
 filename = get_input(local)
 df = pd.read_csv(filename,index_col=None)
@@ -159,15 +158,10 @@ for contaminant in df['CONTAMINANT'].unique():#df0.index.get_level_values('CONTA
     print('Most contaminated Month '+contaminant+' is: ', month_statistics[contaminant])
     plt.show()
 
-
-
-
 c=[k for k in hour_statistics.items()]
 print(pd.DataFrame(np.vstack(c)[:,1]).value_counts()[:3])
 c=[k for k in month_statistics.items()]
 print(pd.DataFrame(np.vstack(c)[:,1]).value_counts()[:4])
-
-
 
 # if __name__ == "__main__":
 #     local = len(sys.argv) == 2 and sys.argv[1] == "local"
