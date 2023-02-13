@@ -14,6 +14,8 @@ try:
        from prophet import Prophet
 except:
        !pip install prophet
+       from prophet.plot import plot_plotly, plot_components_plotly
+       from prophet import Prophet
 
 hours=['01h', '02h', '03h', '04h', '05h', '06h', '07h', '08h',
        '09h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h',
@@ -38,10 +40,9 @@ def run_prophet(local=False):
     df_ = df.loc[df.CONTAMINANT == 'PM10'].groupby(['NOM ESTACIO'])
     forecasts = {}
     for station in df_.groups.keys():
-        forecasts[station] = {}
         df_0 = df_.get_group(station)[hours+['DATA']]#.mean()
         for hour in hours:
-            forecasts[station][hour] = {}
+            forecasts[hour] = {}
             print('Train model for:', hour)
             # df_ = stations_grp.get_group(station)[[hour]+['DATA']]
             df_t = df_0[[hour]+['DATA']]
@@ -50,7 +51,7 @@ def run_prophet(local=False):
             m.fit(df_t)
             future = m.make_future_dataframe(periods=100)
             future.tail()
-            forecasts[station][hour] = m.predict(future)
+            forecasts[hour] = m.predict(future)
     filename = "prophet_model.pickle" if local else "/data/outputs/result"
     with open(filename, "wb") as pickle_file:
         print(f"Pickling results in {filename}")
