@@ -38,9 +38,10 @@ def run_prophet(local=False):
     df_ = df.loc[df.CONTAMINANT == 'PM10'].groupby(['NOM ESTACIO'])
     forecasts = {}
     for station in df_.groups.keys():
+        forecasts[station] = {}
         df_0 = df_.get_group(station)[hours+['DATA']]#.mean()
         for hour in hours:
-            forecasts[hour] = {}
+            forecasts[station][hour] = {}
             print('Train model for:', hour)
             # df_ = stations_grp.get_group(station)[[hour]+['DATA']]
             df_t = df_0[[hour]+['DATA']]
@@ -49,7 +50,7 @@ def run_prophet(local=False):
             m.fit(df_t)
             future = m.make_future_dataframe(periods=100)
             future.tail()
-            forecasts[hour] = m.predict(future)
+            forecasts[station][hour] = m.predict(future)
     filename = "prophet_model.pickle" if local else "/data/outputs/result"
     with open(filename, "wb") as pickle_file:
         print(f"Pickling results in {filename}")
